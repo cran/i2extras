@@ -1,28 +1,19 @@
 
 <!-- badges: start -->
 
-[![Project Status: WIP – Initial development is in progress, but there
-has not yet been a stable, usable release suitable for the
-public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/incidence2)](https://CRAN.R-project.org/package=i2extras)
 [![R build
-status](https://github.com/reconhub/i2extras/workflows/R-CMD-check/badge.svg)](https://github.com/reconhub/i2extras/actions)
+status](https://github.com/reconverse/i2extras/workflows/R-CMD-check/badge.svg)](https://github.com/reconverse/i2extras/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/reconhub/i2extras/branch/master/graph/badge.svg)](https://codecov.io/gh/reconhub/i2extras?branch=master)
+coverage](https://codecov.io/gh/reconverse/i2extras/branch/master/graph/badge.svg)](https://codecov.io/gh/reconverse/i2extras?branch=master)
+[![](https://raw.githubusercontent.com/reconverse/reconverse.github.io/master/images/badge-maturing.svg)](https://www.reconverse.org/lifecycle.html#maturing)
 <!-- badges: end -->
-
-<br> **<span style="color: red;">Disclaimer</span>**
-
-This package is a work in progress. Please reach out to the authors
-before using.
 
 # Scope
 
 *i2extras* adds additional functionality to the
-[incidence2](https://github.com/reconhub/incidence2) package.
+[incidence2](https://github.com/reconverse/incidence2) package.
 
 # What does it do?
 
@@ -59,7 +50,7 @@ The development version can be installed from
 if (!require(remotes)) {
   install.packages("remotes")
 }
-remotes::install_github("reconhub/i2extras", build_vignettes = TRUE)
+remotes::install_github("reconverse/i2extras", build_vignettes = TRUE)
 ```
 
 # Resources
@@ -75,7 +66,7 @@ An overview of *i2extras* is provided in the included vignettes:
 ## Getting help online
 
 Bug reports and feature requests should be posted on *github* using the
-[*issue* system](https://github.com/reconhub/i2extras/issues). All other
-questions should be posted on the **RECON** slack channel see
+[*issue* system](https://github.com/reconverse/i2extras/issues). All
+other questions should be posted on the **RECON** slack channel see
 <https://www.repidemicsconsortium.org/forum/> for details on how to
 join.

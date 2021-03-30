@@ -22,18 +22,18 @@ dat <- fluH7N9_china_2013
 x <- incidence(dat, date_index = date_of_onset, groups = gender)
 
 # peaks across each group
-x %>% find_peak(regroup = FALSE)
+find_peak(x)
 
 # peak without groupings
-x %>% find_peak()
+find_peak(regroup(x))
 
 ## ----estimatepeak-------------------------------------------------------------
 dat <- fluH7N9_china_2013
 x <- incidence(dat, date_index = date_of_onset, groups = province)
 
 # regrouping for overall peak
-x %>% regroup() %>% estimate_peak()
+estimate_peak(regroup(x))
 
 # across provinces and with progress bar suppressed
-x %>% estimate_peak(progress = FALSE)
+estimate_peak(x, progress = FALSE)
 

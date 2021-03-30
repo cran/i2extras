@@ -3,53 +3,68 @@
 #' This function can be used to find the peak of an epidemic curve stored as an
 #' [incidence2::incidence] object.
 #'
-#' @author Thibaut Jombart \email{thibautjombart@@gmail.com}, Zhian N. Kamvar
-#'   \email{zkamvar@@gmail.com}
-#'
-#' @md
+#' @author Tim Taylor
 #'
 #' @param x An [incidence2::incidence] object.
-#' @param regroup If `TRUE` (default), any groups will be regrouped before
-#'   finding a peak. If `FALSE`, separate peaks will be found for each group.
 #'
-#' @return The date of the (first) highest incidence in the data.
+#' @return A tibble containing the date of the (first) highest incidence in the
+#'   data along with the count. If `x` is grouped object then the output will
+#'   have the peak calculated for each grouping.
 #'
-#' @seealso [estimate_peak()] for bootstrap estimates of the peak time
+#' @seealso [estimate_peak()] for bootstrap estimates of the peak time.
 #'
 #' @examples
-#' if (requireNamespace("outbreaks", quietly = TRUE) &&
-#'     requireNamespace("incidence2", quietly = TRUE)) {
+#' if (requireNamespace("outbreaks", quietly = TRUE)) {
 #'
-#'   withAutoprint( {
-#'     # load data and create incidence
-#'     data(fluH7N9_china_2013, package = "outbreaks")
-#'     i <- incidence2::incidence(fluH7N9_china_2013, date_index = date_of_onset)
-#'     i
+#'   # load data and create incidence
+#'   data(fluH7N9_china_2013, package = "outbreaks")
+#'   i <- incidence2::incidence(fluH7N9_china_2013, date_index = date_of_onset)
+#'   find_peak(i)
 #'
-#'     find_peak(i)
-#'   })
 #' }
-#' @importFrom rlang .data
+#'
+#' @import data.table
+#' @importFrom utils head
 #' @export
-find_peak <- function(x, regroup = TRUE) {
+find_peak <- function(x) {
+
   if (!inherits(x, "incidence2")) {
     stop(sprintf("`%s` is not an incidence object", deparse(substitute(x))))
   }
 
-  count_var <- incidence2::get_counts_name(x)
+  # get relevant column names
+  date_var <- incidence2::get_dates_name(x)
+  count_vars <- incidence2::get_counts_name(x)
   group_vars <- incidence2::get_group_names(x)
 
-  if ((length(group_vars) > 0) && regroup) {
-    msg <- paste("`%s` is stratified by groups",
-                 "regrouping groups before finding peaks",
-                 sep = "\n")
-    message(sprintf(msg, deparse(substitute(x))))
-    x <- regroup(x)
+  # convert to data.table
+  dat <- as.data.table(x)
 
-  } else if (length(group_vars) > 0) {
-    x <- dplyr::grouped_df(x, group_vars)
+  # if more than one count variable melt to one column and add to grouping variables
+  if (length(count_vars) > 1) {
+    dat <- melt(
+      dat,
+      id.vars = c(group_vars, date_var),
+      measure.vars = count_vars,
+      na.rm = TRUE,
+      variable.name = "count_variable",
+      value.name = "count",
+      verbose=FALSE
+    )
+    group_vars <- c(group_vars, "count_variable")
+    count_vars <- "count"
   }
 
-  res <- dplyr::slice_max(x, .data[[count_var]], n = 1, with_ties = FALSE)
-  dplyr::ungroup(res)
+  # order in ascending order of groups and then descending order of counts
+  setorderv(dat, cols = c(group_vars, count_vars), order = c(rep(1, length(group_vars)), -1), na.last = TRUE)
+
+  # If no groups just return the ordered dat else the head value for each group
+  if (is.null(group_vars)) {
+    out <- dat[1]
+  } else {
+    out <- dat[, head(.SD, 1), by = group_vars]
+  }
+
+  # convert to tibble
+  new_bare_tibble(out)
 }
