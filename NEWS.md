@@ -1,3 +1,7 @@
+# i2extras 0.1.2
+
+* patch release due to changes in the upstream incidence2 package.
+
 # i2extras 0.1.0
 
 * updated to work with the latest version (1.0.0) of
